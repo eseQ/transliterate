@@ -2,6 +2,8 @@
 
 > Convert Unicode characters to Latin characters using [transliteration](https://en.wikipedia.org/wiki/Transliteration)
 
+This repo IS FORK of `sindresorhus/transliterate` with IE and EDGE support
+
 Can be useful for [slugification](https://github.com/sindresorhus/slugify) purposes and other times you cannot use Unicode.
 
 ## Install
