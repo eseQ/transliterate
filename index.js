@@ -17,15 +17,13 @@ module.exports = (string, options) => {
 		throw new TypeError(`Expected a string, got \`${typeof string}\``);
 	}
 
-	options = {
+	options = Object.assign({
 		customReplacements: [],
-		...options
-	};
+	}, options);
 
-	const customReplacements = new Map([
-		...builtinReplacements,
-		...options.customReplacements
-	]);
+	const customReplacements = new Map(
+		[].concat(builtinReplacements).concat(options.customReplacements).filter(Boolean)
+	);
 
 	string = string.normalize();
 	string = doCustomReplacements(string, customReplacements);
