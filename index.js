@@ -13,35 +13,40 @@ if (!Object.keys) Object.keys = function(o) {
 
 function objAssign(objs) {
 	return objs.reduce(function (r, o) {
-        	Object.keys(o).forEach(function (k) { r[k] = o[k]; });
-        	return r;
+		try {
+			var d = r;
+			Object.keys(o).forEach(function (k) { d[k] = o[k]; });
+			return d;
+		} catch { return r; }
     	}, {});
 };
 
-const doCustomReplacements = (string, replacements) => {
+const doCustomReplacements = (str, replacements) => {
 	return replacements.reduce(function (result, replacement) {
 		var key = replacement[0],
 		    value = replacement[1];
 		if (typeof key !== 'string') return result;
 		// TODO: Use `String#replaceAll()` when targeting Node.js 16.
 		return result.replace(new RegExp(escapeStringRegexp(key), 'g'), value);
-	}, string);
+	}, str);
 };
 
-module.exports = (string, options) => {
-	if (typeof string !== 'string') {
-		throw new TypeError(`Expected a string, got \`${typeof string}\``);
+module.exports = (initString, initOptions) => {
+	if (typeof initString !== 'string') {
+		throw new TypeError(`Expected a string, got \`${typeof initString}\``);
 	}
-
+	
+	var str = initString;
+	var options = initOptions || {};
 	options = objAssign([{
 		customReplacements: [],
 	}, options]);
 
 	const customReplacements = [].concat(builtinReplacements).concat(options.customReplacements).filter(Boolean);
 
-	string = string.normalize();
-	string = doCustomReplacements(string, customReplacements);
-	string = deburr(string);
+	str = str.normalize();
+	str = doCustomReplacements(str, customReplacements);
+	str = deburr(str);
 
-	return string;
+	return str;
 };
